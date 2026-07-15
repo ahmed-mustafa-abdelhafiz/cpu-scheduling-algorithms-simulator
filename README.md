@@ -1,47 +1,53 @@
 # CPU Scheduling Algorithms Simulator (C++)
 
-An interactive, console-based simulator of classic operating-system CPU scheduling algorithms, written in object-oriented C++. The program reads a set of processes from a file, schedules them with the algorithm you choose, and prints a Gantt-style execution trace along with key performance statistics such as average waiting time, turnaround time, and CPU utilization.
+An interactive, console-based simulator of classic operating-system CPU scheduling algorithms, written in object-oriented C++ to demonstrate process scheduling strategies. The program reads a set of processes from a file, schedules them with the algorithm you choose, and prints a Gantt-style execution trace along with key performance statistics such as average waiting time, turnaround time, and CPU utilization.
 
 ## Implemented Algorithms
 
-<table>
-  <tr>
-    <th width="25%">Algorithm</th>
-    <th width="15%">Type</th>
-    <th>Selection Rule</th>
-    <th width="20%">Tie-Breaking</th>
-  </tr>
-  <tr>
-    <td><strong>FCFS</strong> (First-Come First-Served)</td>
-    <td>Non-preemptive</td>
-    <td>Earliest arrival time</td>
-    <td>Input order</td>
-  </tr>
-  <tr>
-    <td><strong>SJF</strong> (Shortest Job First)</td>
-    <td>Non-preemptive</td>
-    <td>Shortest burst time among ready processes</td>
-    <td>Earlier arrival time</td>
-  </tr>
-  <tr>
-    <td><strong>Priority</strong></td>
-    <td>Non-preemptive</td>
-    <td>Highest priority value among ready processes</td>
-    <td>Earlier arrival, then shorter burst</td>
-  </tr>
-  <tr>
-    <td><strong>RR</strong> (Round Robin)</td>
-    <td>Preemptive</td>
-    <td>FIFO ready queue with a fixed time quantum</td>
-    <td>Earlier arrival, then shorter burst</td>
-  </tr>
-  <tr>
-    <td><strong>Priority + RR</strong></td>
-    <td>Hybrid</td>
-    <td>Highest priority first; processes with equal priority share the CPU using Round Robin.</td>
-    <td>Fewer executions so far, then earlier arrival</td>
-  </tr>
-</table>
+<details>
+<summary><strong>FCFS (First-Come, First-Served)</strong></summary>
+
+- **Type:** Non-preemptive
+- **Selection Rule:** Earliest arrival time
+- **Tie-Breaking:** Input order
+
+</details>
+
+<details>
+<summary><strong>SJF (Shortest Job First)</strong></summary>
+
+- **Type:** Non-preemptive
+- **Selection Rule:** Shortest burst time among ready processes
+- **Tie-Breaking:** Earlier arrival time
+
+</details>
+
+<details>
+<summary><strong>Priority</strong></summary>
+
+- **Type:** Non-preemptive
+- **Selection Rule:** Highest priority among ready processes
+- **Tie-Breaking:** Earlier arrival, then shorter burst
+
+</details>
+
+<details>
+<summary><strong>RR (Round Robin)</strong></summary>
+
+- **Type:** Preemptive
+- **Selection Rule:** FIFO ready queue with a fixed time quantum
+- **Tie-Breaking:** Earlier arrival, then shorter burst
+
+</details>
+
+<details>
+<summary><strong>Priority + RR</strong></summary>
+
+- **Type:** Hybrid
+- **Selection Rule:** Highest priority first, and processes with equal priority are scheduled using Round Robin
+- **Tie-Breaking:** Fewer executions so far, then earlier arrival
+
+</details>
 
 > **Note:** In this simulator a **larger priority number means higher priority** (e.g. priority `3` runs before priority `1`).
 
@@ -59,7 +65,6 @@ An interactive, console-based simulator of classic operating-system CPU scheduli
 ## Project Structure
 
 ```
-.
 ├── main.cpp          # Entry point: interactive menu + reads processes from data.txt
 ├── Scheduler.h       # Scheduler class, PCB & ExecutionSlice structs, TIME_QUANTUM
 ├── Scheduler.cpp     # Core scheduler: process creation, dispatching, statistics & reports
@@ -155,27 +160,3 @@ PID  ArvlTime  EndTime  TrnArndTime  WaitingTime
 ```
 
 The menu loops after every run, so you can compare all five algorithms on the same input back to back.
-
-## Algorithm Test Results
-
-Output of each algorithm on the sample `data.txt` (FCFS, SJF, Priority, Round-Robin, Priority + RR):
-
-<div style="display: flex; overflow-x: auto;">
-
-  <img src="https://github.com/user-attachments/assets/1d8bdfda-d34f-47c8-b1e5-a798a16835fe" alt="FCFS" width="300" height="300" style="margin-right: 10px;">
-  <img src="https://github.com/user-attachments/assets/c78997bd-34e6-4bad-9f41-5e1efad7999c" alt="SJF" width="300" height="300" style="margin-right: 10px;">
-  <img src="https://github.com/user-attachments/assets/f3d1cb6b-d2dc-423e-8090-631a2c4ad42b" alt="Priority" width="300" height="300" style="margin-right: 10px;">
-  <img src="https://github.com/user-attachments/assets/7ace8a38-8384-40a7-81a2-3c1206d95b05" alt="Round-Robin" width="300" height="300" style="margin-right: 10px;">
-  <img src="https://github.com/user-attachments/assets/1f428dcc-db09-4670-a702-e5b7b1338235" alt="Priority-RR" width="300" height="300" style="margin-right: 10px;">
-
-</div>
-
-## Configuration
-
-- **Time quantum** — change the `TIME_QUANTUM` macro in `Scheduler.h` (default `2`), then rebuild. It affects both `RR` and `PRIORITY_RR`.
-
-## Design Notes
-
-- **`PCB` (Process Control Block)** stores each process's static attributes (arrival, burst, priority) and its runtime bookkeeping (remaining time, waiting time, turnaround time, execution counter).
-- **`ExecutionSlice`** records every contiguous interval a process spends on the CPU, which is what powers the Gantt-style execution history.
-- Each algorithm lives in its own translation unit and plugs into the shared `Scheduler` class, making it straightforward to add new policies (e.g. preemptive SJF/SRTF or multilevel queues).
